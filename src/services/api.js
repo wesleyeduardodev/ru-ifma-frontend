@@ -23,6 +23,10 @@ api.interceptors.response.use(
         window.location.href = '/login';
       }
     }
+    if (error.response?.status === 429) {
+      const mensagem = error.response.data?.erro || 'Muitas requisições. Tente novamente em instantes.';
+      error.mensagemRateLimit = mensagem;
+    }
     return Promise.reject(error);
   }
 );

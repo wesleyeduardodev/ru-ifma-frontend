@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FiMail, FiLock, FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
@@ -10,8 +10,30 @@ export default function Login() {
   const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
+  const [bloqueadoAte, setBloqueadoAte] = useState(null);
+  const [countdown, setCountdown] = useState(0);
+  const timerRef = useRef(null);
   const { login } = useAuth();
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (!bloqueadoAte) return;
+
+    const atualizar = () => {
+      const restante = Math.ceil((bloqueadoAte - Date.now()) / 1000);
+      if (restante <= 0) {
+        setCountdown(0);
+        setBloqueadoAte(null);
+        clearInterval(timerRef.current);
+      } else {
+        setCountdown(restante);
+      }
+    };
+
+    atualizar();
+    timerRef.current = setInterval(atualizar, 1000);
+    return () => clearInterval(timerRef.current);
+  }, [bloqueadoAte]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -24,8 +46,13 @@ export default function Login() {
       } else {
         setErro('Credenciais inválidas');
       }
-    } catch {
-      setErro('Erro ao fazer login. Verifique suas credenciais.');
+    } catch (err) {
+      if (err.response?.status === 429) {
+        setErro('Muitas tentativas de login. Aguarde 1 minuto.');
+        setBloqueadoAte(Date.now() + 60000);
+      } else {
+        setErro('Erro ao fazer login. Verifique suas credenciais.');
+      }
     } finally {
       setLoading(false);
     }
@@ -103,10 +130,10 @@ export default function Login() {
 
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || countdown > 0}
               className="w-full bg-ifma text-white py-2.5 rounded-xl font-medium hover:bg-ifma-dark shadow-sm active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
             >
-              {loading ? 'Entrando...' : 'Entrar'}
+              {loading ? 'Entrando...' : countdown > 0 ? `Aguarde ${countdown}s` : 'Entrar'}
             </button>
           </form>
 

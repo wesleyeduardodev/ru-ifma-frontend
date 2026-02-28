@@ -6,10 +6,18 @@ import api from '../services/api';
 import CardapioCard from '../components/CardapioCard';
 import EstadoVazio from '../components/EstadoVazio';
 
+function calcularDiasRestantesSemana() {
+  const diaSemana = new Date().getDay();
+  if (diaSemana === 0) return 0;
+  return 7 - diaSemana;
+}
+
 export default function Home() {
   const [data, setData] = useState(new Date());
   const [cardapios, setCardapios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [proximosDias, setProximosDias] = useState([]);
+  const [loadingProximos, setLoadingProximos] = useState(false);
   const dateInputRef = useRef(null);
 
   useEffect(() => {
@@ -19,6 +27,34 @@ export default function Home() {
       .then(res => setCardapios(res.data))
       .catch(() => setCardapios([]))
       .finally(() => setLoading(false));
+  }, [data]);
+
+  useEffect(() => {
+    if (!isToday(data)) {
+      setProximosDias([]);
+      return;
+    }
+
+    const hoje = new Date();
+    const diasRestantes = calcularDiasRestantesSemana();
+
+    if (diasRestantes <= 0) {
+      setProximosDias([]);
+      return;
+    }
+
+    setLoadingProximos(true);
+    const promessas = Array.from({ length: diasRestantes }, (_, i) => {
+      const dia = addDays(hoje, i + 1);
+      const dataStr = format(dia, 'yyyy-MM-dd');
+      return api.get(`/api/cardapios?data=${dataStr}`)
+        .then(res => ({ data: dia, dataStr, cardapios: res.data }))
+        .catch(() => ({ data: dia, dataStr, cardapios: [] }));
+    });
+
+    Promise.all(promessas)
+      .then(setProximosDias)
+      .finally(() => setLoadingProximos(false));
   }, [data]);
 
   const dataFormatadaCurta = format(data, "dd 'de' MMM, yyyy", { locale: ptBR });
@@ -128,6 +164,70 @@ export default function Home() {
             titulo="Nenhum cardápio cadastrado"
             descricao={`Não encontramos refeições para ${format(data, "dd 'de' MMMM", { locale: ptBR })}. Tente outra data.`}
           />
+        )}
+
+        {isToday(data) && proximosDias.length > 0 && (
+          <div className="mt-10 sm:mt-14">
+            <div className="text-center mb-6 sm:mb-8">
+              <h2 className="text-xl sm:text-2xl font-bold text-gray-900 tracking-tight mb-1">Próximos dias</h2>
+              <p className="text-gray-500 text-sm">Confira o que vem por aí nesta semana</p>
+            </div>
+
+            {loadingProximos ? (
+              <div className="space-y-6">
+                {[1, 2].map(i => (
+                  <div key={i} className="animate-pulse">
+                    <div className="h-5 w-40 bg-gray-200 rounded mb-3" />
+                    <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                      <div className="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="h-14 bg-gray-200" />
+                        <div className="p-6 space-y-4">
+                          <div className="h-12 bg-gray-100 rounded-xl" />
+                          <div className="grid grid-cols-2 gap-4">
+                            {[1, 2, 3, 4].map(j => (
+                              <div key={j} className="space-y-2">
+                                <div className="h-3 w-20 bg-gray-100 rounded" />
+                                <div className="h-4 w-full bg-gray-100 rounded" />
+                              </div>
+                            ))}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {proximosDias.map(({ data: dia, dataStr, cardapios: cardapiosDia }) => {
+                  const nomeDia = format(dia, "EEEE, dd 'de' MMMM", { locale: ptBR });
+
+                  return (
+                    <div key={dataStr}>
+                      <div className="flex items-center gap-2 mb-3">
+                        <FiCalendar size={16} className="text-gray-400" />
+                        <h3 className="text-sm sm:text-base font-semibold capitalize text-gray-700">
+                          {nomeDia}
+                        </h3>
+                      </div>
+
+                      {cardapiosDia.length > 0 ? (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+                          {cardapiosDia.map(c => (
+                            <CardapioCard key={c.id} cardapio={c} />
+                          ))}
+                        </div>
+                      ) : (
+                        <div className="bg-white rounded-xl border border-gray-100 px-5 py-4 text-sm text-gray-400">
+                          Sem cardápio cadastrado para este dia
+                        </div>
+                      )}
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
         )}
       </div>
     </div>

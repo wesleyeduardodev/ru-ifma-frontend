@@ -9,6 +9,7 @@ import CardapioList from './pages/CardapioList'
 import CardapioForm from './pages/CardapioForm'
 import AdminList from './pages/AdminList'
 import AdminForm from './pages/AdminForm'
+import AlterarSenha from './pages/AlterarSenha'
 
 function App() {
   const location = useLocation()
@@ -29,6 +30,7 @@ function App() {
           <Route path="/admin/administradores" element={<PrivateRoute><AdminList /></PrivateRoute>} />
           <Route path="/admin/administradores/novo" element={<PrivateRoute><AdminForm /></PrivateRoute>} />
           <Route path="/admin/administradores/:id/editar" element={<PrivateRoute><AdminForm /></PrivateRoute>} />
+          <Route path="/admin/alterar-senha" element={<PrivateRoute><AlterarSenha /></PrivateRoute>} />
         </Routes>
       </main>
       {!isLogin && !isAdmin && <Footer />}

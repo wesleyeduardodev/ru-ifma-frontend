@@ -30,7 +30,7 @@ export default function Header() {
               to="/login"
               className="text-sm font-medium border border-white/30 hover:bg-white/15 px-3 sm:px-4 py-2 rounded-lg transition-all duration-200"
             >
-              Admin
+              Login
             </Link>
           )}
         </nav>

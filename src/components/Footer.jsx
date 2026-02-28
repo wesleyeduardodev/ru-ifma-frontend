@@ -22,7 +22,7 @@ export default function Footer() {
               Cardápio
             </Link>
             <Link to="/login" className="text-sm text-white/70 hover:text-white transition-colors duration-200">
-              Admin
+              Login
             </Link>
           </nav>
         </div>

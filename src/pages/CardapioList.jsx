@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { FiPlus, FiEdit2, FiTrash2, FiSun, FiMoon, FiCalendar, FiList } from 'react-icons/fi';
@@ -6,11 +6,15 @@ import api from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import PaginaHeader from '../components/PaginaHeader';
 import EstadoVazio from '../components/EstadoVazio';
+import ModalConfirmacao from '../components/ModalConfirmacao';
 
 export default function CardapioList() {
   const [data, setData] = useState(format(new Date(), 'yyyy-MM-dd'));
   const [cardapios, setCardapios] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalExclusaoAberto, setModalExclusaoAberto] = useState(false);
+  const [cardapioSelecionado, setCardapioSelecionado] = useState(null);
+  const [excluindo, setExcluindo] = useState(false);
 
   const fetchCardapios = () => {
     setLoading(true);
@@ -22,10 +26,29 @@ export default function CardapioList() {
 
   useEffect(() => { fetchCardapios(); }, [data]);
 
-  const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir este cardápio?')) return;
-    await api.delete(`/api/cardapios/${id}`);
-    fetchCardapios();
+  const abrirModalExclusao = (id) => {
+    setCardapioSelecionado(id);
+    setModalExclusaoAberto(true);
+  };
+
+  const fecharModalExclusao = () => {
+    if (excluindo) return;
+    setModalExclusaoAberto(false);
+    setCardapioSelecionado(null);
+  };
+
+  const confirmarExclusao = async () => {
+    if (!cardapioSelecionado) return;
+
+    setExcluindo(true);
+    try {
+      await api.delete(`/api/cardapios/${cardapioSelecionado}`);
+      setModalExclusaoAberto(false);
+      setCardapioSelecionado(null);
+      fetchCardapios();
+    } finally {
+      setExcluindo(false);
+    }
   };
 
   return (
@@ -100,7 +123,7 @@ export default function CardapioList() {
                           <FiEdit2 size={13} /> <span className="hidden sm:inline">Editar</span>
                         </Link>
                         <button
-                          onClick={() => handleDelete(c.id)}
+                          onClick={() => abrirModalExclusao(c.id)}
                           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                           <FiTrash2 size={13} /> <span className="hidden sm:inline">Excluir</span>
@@ -120,6 +143,17 @@ export default function CardapioList() {
           descricao="Selecione outra data ou crie um novo cardápio"
         />
       )}
+
+      <ModalConfirmacao
+        aberto={modalExclusaoAberto}
+        titulo="Excluir cardápio"
+        mensagem="Tem certeza que deseja excluir este cardápio? Esta ação não pode ser desfeita."
+        textoConfirmar="Excluir"
+        textoCancelar="Cancelar"
+        carregando={excluindo}
+        onConfirmar={confirmarExclusao}
+        onCancelar={fecharModalExclusao}
+      />
     </AdminLayout>
   );
 }

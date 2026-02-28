@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+﻿import { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -7,10 +7,14 @@ import api from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import PaginaHeader from '../components/PaginaHeader';
 import EstadoVazio from '../components/EstadoVazio';
+import ModalConfirmacao from '../components/ModalConfirmacao';
 
 export default function AdminList() {
   const [admins, setAdmins] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [modalExclusaoAberto, setModalExclusaoAberto] = useState(false);
+  const [adminSelecionado, setAdminSelecionado] = useState(null);
+  const [excluindo, setExcluindo] = useState(false);
 
   const fetchAdmins = () => {
     setLoading(true);
@@ -22,10 +26,29 @@ export default function AdminList() {
 
   useEffect(() => { fetchAdmins(); }, []);
 
-  const handleDelete = async (id) => {
-    if (!confirm('Tem certeza que deseja excluir este administrador?')) return;
-    await api.delete(`/api/admin/${id}`);
-    fetchAdmins();
+  const abrirModalExclusao = (id) => {
+    setAdminSelecionado(id);
+    setModalExclusaoAberto(true);
+  };
+
+  const fecharModalExclusao = () => {
+    if (excluindo) return;
+    setModalExclusaoAberto(false);
+    setAdminSelecionado(null);
+  };
+
+  const confirmarExclusao = async () => {
+    if (!adminSelecionado) return;
+
+    setExcluindo(true);
+    try {
+      await api.delete(`/api/admin/${adminSelecionado}`);
+      setModalExclusaoAberto(false);
+      setAdminSelecionado(null);
+      fetchAdmins();
+    } finally {
+      setExcluindo(false);
+    }
   };
 
   return (
@@ -76,7 +99,7 @@ export default function AdminList() {
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-500 hidden sm:table-cell">{a.email}</td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-gray-400 text-xs hidden md:table-cell">
-                      {a.criadoEm ? format(new Date(a.criadoEm), "dd MMM yyyy", { locale: ptBR }) : '-'}
+                      {a.criadoEm ? format(new Date(a.criadoEm), 'dd MMM yyyy', { locale: ptBR }) : '-'}
                     </td>
                     <td className="px-3 sm:px-6 py-3 sm:py-4 text-right">
                       <div className="flex items-center justify-end gap-2">
@@ -87,7 +110,7 @@ export default function AdminList() {
                           <FiEdit2 size={13} /> <span className="hidden sm:inline">Editar</span>
                         </Link>
                         <button
-                          onClick={() => handleDelete(a.id)}
+                          onClick={() => abrirModalExclusao(a.id)}
                           className="inline-flex items-center gap-1.5 text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
                         >
                           <FiTrash2 size={13} /> <span className="hidden sm:inline">Excluir</span>
@@ -107,6 +130,17 @@ export default function AdminList() {
           descricao="Adicione um novo administrador para gerenciar o sistema"
         />
       )}
+
+      <ModalConfirmacao
+        aberto={modalExclusaoAberto}
+        titulo="Excluir administrador"
+        mensagem="Tem certeza que deseja excluir este administrador? Esta ação não pode ser desfeita."
+        textoConfirmar="Excluir"
+        textoCancelar="Cancelar"
+        carregando={excluindo}
+        onConfirmar={confirmarExclusao}
+        onCancelar={fecharModalExclusao}
+      />
     </AdminLayout>
   );
 }

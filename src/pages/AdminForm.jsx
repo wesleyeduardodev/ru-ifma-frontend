@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FiSave, FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
+import { FiSave, FiArrowLeft, FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
 import api from '../services/api';
 import AdminLayout from '../components/AdminLayout';
 import CampoFormulario from '../components/CampoFormulario';
@@ -13,6 +13,7 @@ export default function AdminForm() {
   const isEditing = Boolean(id);
 
   const [form, setForm] = useState({ nome: '', email: '', senha: '' });
+  const [mostrarSenha, setMostrarSenha] = useState(false);
   const [erro, setErro] = useState('');
   const [loading, setLoading] = useState(false);
 
@@ -107,14 +108,23 @@ export default function AdminForm() {
                 Senha {isEditing && <span className="text-gray-400 font-normal normal-case tracking-normal">(deixe em branco para manter)</span>}
               </>
             }>
-              <input
-                type="password"
-                name="senha"
-                value={form.senha}
-                onChange={handleChange}
-                required={!isEditing}
-                className={inputClasses}
-              />
+              <div className="relative">
+                <input
+                  type={mostrarSenha ? 'text' : 'password'}
+                  name="senha"
+                  value={form.senha}
+                  onChange={handleChange}
+                  required={!isEditing}
+                  className={`${inputClasses} pr-10`}
+                />
+                <button
+                  type="button"
+                  onClick={() => setMostrarSenha(!mostrarSenha)}
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 text-gray-400 hover:text-ifma focus:outline-none transition-colors duration-200"
+                >
+                  {mostrarSenha ? <FiEyeOff size={18} /> : <FiEye size={18} />}
+                </button>
+              </div>
               {!isEditing && (
                 <p className="text-xs text-gray-400 mt-1.5">Mínimo de 6 caracteres</p>
               )}

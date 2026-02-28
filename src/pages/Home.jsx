@@ -44,24 +44,13 @@ export default function Home() {
             <FiChevronLeft size={18} className="text-gray-600 sm:w-5 sm:h-5" />
           </button>
 
-          <div className="relative">
-            <button
-              onClick={() => dateInputRef.current?.showPicker?.()}
-              className="flex items-center gap-2 bg-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
-            >
-              <FiCalendar className="text-ifma shrink-0" size={16} />
-              <span className="text-gray-800 font-semibold capitalize text-sm sm:text-base sm:hidden">{dataFormatadaCurta}</span>
-              <span className="text-gray-800 font-semibold capitalize text-base hidden sm:inline">{dataFormatadaLonga}</span>
-            </button>
-            <input
-              ref={dateInputRef}
-              type="date"
-              value={format(data, 'yyyy-MM-dd')}
-              onChange={e => setData(new Date(e.target.value + 'T12:00:00'))}
-              className="absolute inset-0 opacity-0 cursor-pointer"
-              tabIndex={-1}
-            />
-          </div>
+          <button
+            onClick={() => dateInputRef.current?.showPicker?.()}
+            className="bg-white px-4 sm:px-6 py-2.5 sm:py-3 rounded-xl shadow-sm border border-gray-200 hover:shadow-md transition-all duration-200 cursor-pointer"
+          >
+            <span className="text-gray-800 font-semibold capitalize text-sm sm:text-base sm:hidden">{dataFormatadaCurta}</span>
+            <span className="text-gray-800 font-semibold capitalize text-base hidden sm:inline">{dataFormatadaLonga}</span>
+          </button>
 
           <button
             onClick={() => setData(d => addDays(d, 1))}
@@ -69,6 +58,28 @@ export default function Home() {
           >
             <FiChevronRight size={18} className="text-gray-600 sm:w-5 sm:h-5" />
           </button>
+
+          <button
+            type="button"
+            onClick={() => {
+              dateInputRef.current?.showPicker?.();
+              dateInputRef.current?.focus();
+            }}
+            title="Escolher data no calendário"
+            aria-label="Escolher data no calendário"
+            className="p-2.5 rounded-xl bg-white shadow-sm border border-gray-200 hover:bg-gray-50 hover:shadow-md active:scale-95 transition-all duration-200"
+          >
+            <FiCalendar className="text-ifma" size={18} />
+          </button>
+
+          <input
+            ref={dateInputRef}
+            type="date"
+            value={format(data, 'yyyy-MM-dd')}
+            onChange={e => setData(new Date(e.target.value + 'T12:00:00'))}
+            className="sr-only"
+            tabIndex={-1}
+          />
         </div>
 
         {!isToday(data) && (

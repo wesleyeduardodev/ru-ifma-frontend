@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom';
 import { FiHome, FiList, FiUsers, FiArrowLeft, FiLogOut } from 'react-icons/fi';
 import { useAuth } from '../contexts/AuthContext';
+import LogoRU from './LogoRU';
 
 export default function AdminLayout({ children }) {
   const location = useLocation();
@@ -19,9 +20,7 @@ export default function AdminLayout({ children }) {
       <aside className="hidden md:flex md:w-64 shrink-0 bg-slate-800 flex-col">
         <div className="px-5 py-5 border-b border-slate-700">
           <Link to="/" className="flex items-center gap-3 hover:opacity-90 transition-all duration-200">
-            <div className="w-10 h-10 bg-ifma rounded-full flex items-center justify-center ring-2 ring-ifma/30">
-              <span className="text-white font-bold text-sm">RU</span>
-            </div>
+            <LogoRU className="w-10 h-10" />
             <div>
               <p className="text-white font-bold text-sm leading-tight">Restaurante</p>
               <p className="text-white font-bold text-sm leading-tight">Universitário</p>
@@ -73,8 +72,8 @@ export default function AdminLayout({ children }) {
 
       <div className="flex-1 flex flex-col bg-gray-50 min-w-0">
         <div className="md:hidden bg-slate-800 px-3 py-2.5 flex items-center gap-1 overflow-x-auto">
-          <Link to="/" className="w-7 h-7 bg-ifma rounded-full flex items-center justify-center shrink-0 mr-1">
-            <span className="text-white font-bold text-[10px]">RU</span>
+          <Link to="/" className="shrink-0 mr-1">
+            <LogoRU className="w-7 h-7" />
           </Link>
           {links.map(({ to, label, icon: Icon }) => (
             <Link

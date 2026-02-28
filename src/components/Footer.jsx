@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom';
+import LogoRU from './LogoRU';
 
 export default function Footer() {
   const anoAtual = new Date().getFullYear();
@@ -9,9 +10,7 @@ export default function Footer() {
       <div className="max-w-6xl mx-auto px-4 py-8">
         <div className="flex flex-col sm:flex-row items-center justify-between gap-4">
           <div className="flex items-center gap-3">
-            <div className="w-9 h-9 bg-white rounded-full flex items-center justify-center ring-2 ring-white/20">
-              <span className="text-ifma font-bold text-sm">RU</span>
-            </div>
+            <LogoRU className="w-9 h-9" />
             <div>
               <p className="text-sm font-semibold text-white">Restaurante Universitário</p>
               <p className="text-xs text-white/70">IFMA - Instituto Federal do Maranhão</p>

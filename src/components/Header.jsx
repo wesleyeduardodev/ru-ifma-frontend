@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FiSettings } from 'react-icons/fi';
+import LogoRU from './LogoRU';
 
 export default function Header() {
   const { admin } = useAuth();
@@ -9,9 +10,7 @@ export default function Header() {
     <header className="sticky top-0 z-50 bg-ifma/95 backdrop-blur-sm text-white shadow-lg">
       <div className="max-w-6xl mx-auto px-4 py-3 sm:py-3.5 flex items-center justify-between gap-3">
         <Link to="/" className="flex items-center gap-2.5 sm:gap-3 hover:opacity-90 transition-all duration-200 min-w-0">
-          <div className="w-10 h-10 sm:w-11 sm:h-11 bg-white rounded-full flex items-center justify-center ring-2 ring-white/20 shrink-0">
-            <span className="text-ifma font-bold text-base sm:text-lg">RU</span>
-          </div>
+          <LogoRU className="w-10 h-10 sm:w-11 sm:h-11 shrink-0" />
           <div className="min-w-0">
             <h1 className="text-base sm:text-xl font-bold leading-tight tracking-tight truncate">Restaurante Universitário</h1>
             <p className="text-white/70 text-xs hidden sm:block">IFMA - Instituto Federal do Maranhão</p>

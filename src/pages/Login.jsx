@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
 import { FiMail, FiLock, FiAlertCircle, FiEye, FiEyeOff } from 'react-icons/fi';
+import LogoRU from '../components/LogoRU';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -34,8 +35,8 @@ export default function Login() {
     <div className="min-h-screen bg-gray-50 flex">
       <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-ifma to-emerald-700 items-center justify-center p-12">
         <div className="text-white text-center max-w-sm">
-          <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
-            <span className="text-white font-bold text-3xl">RU</span>
+          <div className="w-20 h-20 bg-white/10 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+            <LogoRU className="w-14 h-14" />
           </div>
           <h2 className="text-3xl font-bold mb-3 tracking-tight">Restaurante Universitário</h2>
           <p className="text-white/70 text-lg">Gerenciamento de cardápios do IFMA</p>
@@ -45,8 +46,8 @@ export default function Login() {
       <div className="flex-1 flex items-center justify-center px-6">
         <div className="w-full max-w-md">
           <div className="lg:hidden text-center mb-8">
-            <div className="w-16 h-16 bg-ifma rounded-full flex items-center justify-center mx-auto mb-4">
-              <span className="text-white font-bold text-2xl">RU</span>
+            <div className="w-16 h-16 flex items-center justify-center mx-auto mb-4">
+              <LogoRU className="w-16 h-16" />
             </div>
           </div>
 

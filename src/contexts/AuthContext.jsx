@@ -8,12 +8,12 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const credentials = localStorage.getItem('ru_credentials');
+    const credentials = sessionStorage.getItem('ru_credentials');
     if (credentials) {
       api.get('/api/auth/me')
         .then(res => setAdmin(res.data))
         .catch(() => {
-          localStorage.removeItem('ru_credentials');
+          sessionStorage.removeItem('ru_credentials');
           setAdmin(null);
         })
         .finally(() => setLoading(false));
@@ -26,7 +26,7 @@ export function AuthProvider({ children }) {
     const res = await api.post('/api/auth/login', { email, senha });
     if (res.data.admin) {
       const credentials = btoa(`${email}:${senha}`);
-      localStorage.setItem('ru_credentials', credentials);
+      sessionStorage.setItem('ru_credentials', credentials);
       setAdmin(res.data.admin);
       return true;
     }
@@ -34,7 +34,7 @@ export function AuthProvider({ children }) {
   };
 
   const logout = () => {
-    localStorage.removeItem('ru_credentials');
+    sessionStorage.removeItem('ru_credentials');
     setAdmin(null);
   };
 

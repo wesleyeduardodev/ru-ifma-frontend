@@ -34,6 +34,14 @@ export default function AdminForm() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setErro('');
+    if (!isEditing && form.senha.length < 8) {
+      setErro('A senha deve ter no minimo 8 caracteres');
+      return;
+    }
+    if (isEditing && form.senha && form.senha.length < 8) {
+      setErro('A senha deve ter no minimo 8 caracteres');
+      return;
+    }
     setLoading(true);
     try {
       if (isEditing) {
@@ -115,6 +123,7 @@ export default function AdminForm() {
                   value={form.senha}
                   onChange={handleChange}
                   required={!isEditing}
+                  minLength={8}
                   className={`${inputClasses} pr-10`}
                 />
                 <button
@@ -126,7 +135,7 @@ export default function AdminForm() {
                 </button>
               </div>
               {!isEditing && (
-                <p className="text-xs text-gray-400 mt-1.5">Mínimo de 6 caracteres</p>
+                <p className="text-xs text-gray-400 mt-1.5">Minimo de 8 caracteres</p>
               )}
             </CampoFormulario>
           </div>

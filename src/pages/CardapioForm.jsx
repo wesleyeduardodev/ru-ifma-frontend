@@ -262,7 +262,7 @@ export default function CardapioForm() {
             <div>
               <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Itens do cardápio</h3>
               <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-                <div className="rounded-2xl border border-emerald-100 bg-emerald-100/50 p-4 space-y-4">
+                <div className="rounded-2xl border border-gray-200 border-l-4 border-l-ifma bg-white p-4 space-y-4">
                   <div className="flex items-center justify-between gap-2">
                     <h4 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                       <FiSun className="text-ifma" size={16} /> Almoço
@@ -318,7 +318,7 @@ export default function CardapioForm() {
                   </CampoFormulario>
                 </div>
 
-                <div className="rounded-2xl border border-blue-100 bg-blue-100/50 p-4 space-y-4">
+                <div className="rounded-2xl border border-gray-200 border-l-4 border-l-indigo-400 bg-white p-4 space-y-4">
                   <div className="flex items-center justify-between gap-2">
                     <h4 className="text-base font-semibold text-gray-900 flex items-center gap-2">
                       <FiMoon className="text-blue-600" size={16} /> Jantar

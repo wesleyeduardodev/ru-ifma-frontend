@@ -11,6 +11,13 @@ npm install
 npm run dev    # http://localhost:5173
 ```
 
+## Variaveis de ambiente
+
+- `VITE_API_URL` - URL da API (default: `http://localhost:8080`)
+- Arquivo `.env.development` para desenvolvimento local
+- Arquivo `.env.example` como template (commitado no repositorio)
+- Arquivos `.env` e `.env.*` estao no `.gitignore` (exceto `.env.example`)
+
 ## Estrutura
 
 ```
@@ -19,14 +26,20 @@ src/
   App.jsx              → Definicao de rotas
   index.css            → Import do TailwindCSS
   services/
-    api.js             → Instancia Axios com interceptor Basic Auth
+    api.js             → Instancia Axios com interceptors (auth + 401)
   contexts/
     AuthContext.jsx     → Estado de autenticacao (login/logout/admin)
   components/
     Header.jsx         → Cabecalho com logo RU e navegacao
+    Footer.jsx         → Rodape da aplicacao
+    LogoRU.jsx         → Componente SVG do logo do RU
     PrivateRoute.jsx   → Protege rotas admin (redireciona para /login)
     CardapioCard.jsx   → Card de cardapio (almoco/jantar)
     AdminLayout.jsx    → Layout do painel admin com sidebar
+    CampoFormulario.jsx → Campo de formulario reutilizavel com label
+    EstadoVazio.jsx    → Componente de estado vazio (icone + mensagem)
+    ModalConfirmacao.jsx → Modal de confirmacao reutilizavel
+    PaginaHeader.jsx   → Header de pagina com titulo, subtitulo e acao
   pages/
     Home.jsx           → Pagina publica com cardapio do dia
     Login.jsx          → Formulario de login
@@ -55,13 +68,19 @@ src/
 
 - Login via POST /api/auth/login (valida credenciais)
 - Credenciais armazenadas em sessionStorage como base64 (chave: `ru_credentials`)
-- Interceptor Axios adiciona header `Authorization: Basic {credentials}` automaticamente
+- Interceptor de request: adiciona header `Authorization: Basic {credentials}` automaticamente
+- Interceptor de response: ao receber 401, limpa credenciais e redireciona para /login
 - AuthContext expoe: admin, login(), logout(), loading
 - PrivateRoute redireciona para /login se nao autenticado
 
+## Regras de negocio no frontend
+
+- Admin principal (`admin@ifma.edu.br`) nao aparece na listagem de administradores
+- Senha minima de 8 caracteres validada no formulario de admin (frontend + backend)
+
 ## Integracao com API
 
-Base URL: `http://localhost:8080`
+Base URL: configurada via `VITE_API_URL` (fallback: `http://localhost:8080`)
 
 Todas as chamadas via instancia Axios em `src/services/api.js`:
 - `api.get('/api/cardapios?data=YYYY-MM-DD')` → cardapios publicos
@@ -72,11 +91,19 @@ Todas as chamadas via instancia Axios em `src/services/api.js`:
 - `api.post('/api/auth/login', body)` → login (publico)
 - `api.get('/api/auth/me')` → admin logado (autenticado)
 
+## Deploy
+
+- Hospedado na Vercel
+- Variavel `VITE_API_URL` configurada no painel da Vercel
+- Headers de seguranca configurados no `vercel.json` (CSP, HSTS, X-Frame-Options, etc)
+- Sourcemaps desabilitados no build de producao
+
 ## Design
 
 - Cores IFMA: verde `#00843D`, branco, cinza claro (`bg-gray-50`)
 - Componentes com TailwindCSS (classes utilitarias, sem CSS custom)
 - Icones via react-icons (pacote Fi - Feather Icons)
+- Fonte Inter via Google Fonts
 - Responsivo (mobile-first com breakpoints sm/md)
 - Cards com bordas arredondadas (`rounded-xl`, `rounded-2xl`), sombras suaves
 - Loading spinner com `animate-spin` verde

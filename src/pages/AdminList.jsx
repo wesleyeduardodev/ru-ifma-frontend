@@ -87,7 +87,7 @@ export default function AdminList() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {admins.map(a => (
+                {admins.filter(a => a.email !== 'admin@ifma.edu.br').map(a => (
                   <tr key={a.id} className="hover:bg-ifma-50/50 transition-colors duration-150">
                     <td className="px-3 sm:px-6 py-3 sm:py-4">
                       <div className="flex items-center gap-3">
@@ -109,12 +109,14 @@ export default function AdminList() {
                         >
                           <FiEdit2 size={13} /> <span className="hidden sm:inline">Editar</span>
                         </Link>
-                        <button
-                          onClick={() => abrirModalExclusao(a.id)}
-                          className="inline-flex items-center gap-1.5 text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
-                        >
-                          <FiTrash2 size={13} /> <span className="hidden sm:inline">Excluir</span>
-                        </button>
+                        {a.email !== 'admin@ifma.edu.br' && (
+                          <button
+                            onClick={() => abrirModalExclusao(a.id)}
+                            className="inline-flex items-center gap-1.5 text-gray-500 hover:text-red-600 bg-gray-50 hover:bg-red-50 px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-200"
+                          >
+                            <FiTrash2 size={13} /> <span className="hidden sm:inline">Excluir</span>
+                          </button>
+                        )}
                       </div>
                     </td>
                   </tr>

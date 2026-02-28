@@ -54,7 +54,7 @@ src/
 ## Autenticacao
 
 - Login via POST /api/auth/login (valida credenciais)
-- Credenciais armazenadas em localStorage como base64 (chave: `ru_credentials`)
+- Credenciais armazenadas em sessionStorage como base64 (chave: `ru_credentials`)
 - Interceptor Axios adiciona header `Authorization: Basic {credentials}` automaticamente
 - AuthContext expoe: admin, login(), logout(), loading
 - PrivateRoute redireciona para /login se nao autenticado

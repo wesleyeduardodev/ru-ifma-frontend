@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { useAuth } from '../contexts/AuthContext';
-import { FiMail, FiLock } from 'react-icons/fi';
+import { FiMail, FiLock, FiAlertCircle } from 'react-icons/fi';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -30,59 +30,83 @@ export default function Login() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center px-4">
-      <div className="w-full max-w-md">
-        <div className="text-center mb-8">
-          <div className="w-16 h-16 bg-[#00843D] rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="text-white font-bold text-2xl">RU</span>
+    <div className="min-h-screen bg-gray-50 flex">
+      <div className="hidden lg:flex lg:w-1/2 bg-gradient-to-br from-ifma to-emerald-700 items-center justify-center p-12">
+        <div className="text-white text-center max-w-sm">
+          <div className="w-20 h-20 bg-white/15 rounded-2xl flex items-center justify-center mx-auto mb-6 backdrop-blur-sm">
+            <span className="text-white font-bold text-3xl">RU</span>
           </div>
-          <h2 className="text-2xl font-bold text-gray-800">Acesso Administrativo</h2>
-          <p className="text-gray-500 mt-1">Entre com suas credenciais</p>
+          <h2 className="text-3xl font-bold mb-3 tracking-tight">Restaurante Universitário</h2>
+          <p className="text-white/70 text-lg">Gerenciamento de cardápios do IFMA</p>
         </div>
+      </div>
 
-        <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
-          {erro && (
-            <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">{erro}</div>
-          )}
-
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Email</label>
-            <div className="relative">
-              <FiMail className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                required
-                placeholder="admin@ifma.edu.br"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00843D] focus:border-transparent"
-              />
+      <div className="flex-1 flex items-center justify-center px-6">
+        <div className="w-full max-w-md">
+          <div className="lg:hidden text-center mb-8">
+            <div className="w-16 h-16 bg-ifma rounded-full flex items-center justify-center mx-auto mb-4">
+              <span className="text-white font-bold text-2xl">RU</span>
             </div>
           </div>
 
-          <div>
-            <label className="block text-sm font-medium text-gray-700 mb-2">Senha</label>
-            <div className="relative">
-              <FiLock className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
-              <input
-                type="password"
-                value={senha}
-                onChange={e => setSenha(e.target.value)}
-                required
-                placeholder="Sua senha"
-                className="w-full pl-10 pr-4 py-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00843D] focus:border-transparent"
-              />
-            </div>
+          <div className="text-center mb-8">
+            <h2 className="text-2xl font-bold text-gray-900 tracking-tight">Acesso Administrativo</h2>
+            <p className="text-gray-500 mt-1">Entre com suas credenciais</p>
           </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full bg-[#00843D] text-white py-3 rounded-lg font-medium hover:bg-green-800 transition disabled:opacity-50"
-          >
-            {loading ? 'Entrando...' : 'Entrar'}
-          </button>
-        </form>
+          <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-8 space-y-5">
+            {erro && (
+              <div className="flex items-start gap-2 bg-red-50 border border-red-200 border-l-4 border-l-red-400 text-red-700 px-4 py-3 rounded-xl text-sm">
+                <FiAlertCircle className="shrink-0 mt-0.5" size={16} />
+                <span>{erro}</span>
+              </div>
+            )}
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Email</label>
+              <div className="relative">
+                <FiMail className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <input
+                  type="email"
+                  value={email}
+                  onChange={e => setEmail(e.target.value)}
+                  required
+                  placeholder="admin@ifma.edu.br"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ifma/20 focus:border-ifma focus:shadow-sm text-sm transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-sm font-semibold text-gray-700 mb-1.5">Senha</label>
+              <div className="relative">
+                <FiLock className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" size={16} />
+                <input
+                  type="password"
+                  value={senha}
+                  onChange={e => setSenha(e.target.value)}
+                  required
+                  placeholder="Sua senha"
+                  className="w-full pl-10 pr-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ifma/20 focus:border-ifma focus:shadow-sm text-sm transition-all duration-200"
+                />
+              </div>
+            </div>
+
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-ifma text-white py-2.5 rounded-xl font-medium hover:bg-ifma-dark shadow-sm active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
+            >
+              {loading ? 'Entrando...' : 'Entrar'}
+            </button>
+          </form>
+
+          <div className="text-center mt-6">
+            <Link to="/" className="text-sm text-gray-400 hover:text-ifma transition-colors duration-200">
+              Voltar ao cardápio
+            </Link>
+          </div>
+        </div>
       </div>
     </div>
   );

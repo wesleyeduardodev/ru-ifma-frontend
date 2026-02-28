@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+@theme {
+  --color-ifma: #00843D;
+  --color-ifma-dark: #006B31;
+  --color-ifma-light: #E8F5EE;
+  --color-ifma-50: #F0FAF4;
+  --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  body {
+    @apply font-sans antialiased text-gray-800;
+  }
+}
+
+@keyframes loading {
+  0%, 100% { transform: translateX(-100%); }
+  50% { transform: translateX(200%); }
+}

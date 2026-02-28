@@ -1,8 +1,11 @@
 import { useState, useEffect } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { FiSave, FiArrowLeft } from 'react-icons/fi';
+import { FiSave, FiArrowLeft, FiAlertCircle } from 'react-icons/fi';
 import api from '../services/api';
 import AdminLayout from '../components/AdminLayout';
+import CampoFormulario from '../components/CampoFormulario';
+
+const inputClasses = 'w-full px-4 py-2.5 border border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-ifma/20 focus:border-ifma text-sm transition-all duration-200';
 
 export default function AdminForm() {
   const { id } = useParams();
@@ -49,65 +52,93 @@ export default function AdminForm() {
   return (
     <AdminLayout>
       <div className="flex items-center gap-4 mb-6">
-        <button onClick={() => navigate('/admin/administradores')} className="text-gray-500 hover:text-gray-700">
+        <button
+          onClick={() => navigate('/admin/administradores')}
+          className="p-2 rounded-lg text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-all duration-200"
+        >
           <FiArrowLeft size={20} />
         </button>
-        <h2 className="text-2xl font-bold text-gray-800">
+        <h2 className="text-2xl font-bold text-gray-900 tracking-tight">
           {isEditing ? 'Editar Administrador' : 'Novo Administrador'}
         </h2>
       </div>
 
-      <form onSubmit={handleSubmit} className="bg-white rounded-xl shadow-sm border border-gray-100 p-6 space-y-5 max-w-lg">
+      <form onSubmit={handleSubmit} className="bg-white rounded-2xl shadow-sm border border-gray-100 p-6 max-w-lg">
         {erro && (
-          <div className="bg-red-50 text-red-600 px-4 py-3 rounded-lg text-sm">{erro}</div>
+          <div className="flex items-start gap-2 bg-red-50 border border-red-200 border-l-4 border-l-red-400 text-red-700 px-4 py-3 rounded-xl text-sm mb-6">
+            <FiAlertCircle className="shrink-0 mt-0.5" size={16} />
+            <span>{erro}</span>
+          </div>
         )}
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Nome</label>
-          <input
-            type="text"
-            name="nome"
-            value={form.nome}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00843D]"
-          />
+        <div className="space-y-6">
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Dados pessoais</h3>
+            <div className="space-y-4">
+              <CampoFormulario label="Nome">
+                <input
+                  type="text"
+                  name="nome"
+                  value={form.nome}
+                  onChange={handleChange}
+                  required
+                  className={inputClasses}
+                />
+              </CampoFormulario>
+              <CampoFormulario label="Email">
+                <input
+                  type="email"
+                  name="email"
+                  value={form.email}
+                  onChange={handleChange}
+                  required
+                  className={inputClasses}
+                />
+              </CampoFormulario>
+            </div>
+          </div>
+
+          <hr className="border-gray-100" />
+
+          <div>
+            <h3 className="text-sm font-bold text-gray-900 uppercase tracking-wider mb-4">Segurança</h3>
+            <CampoFormulario label={
+              <>
+                Senha {isEditing && <span className="text-gray-400 font-normal normal-case tracking-normal">(deixe em branco para manter)</span>}
+              </>
+            }>
+              <input
+                type="password"
+                name="senha"
+                value={form.senha}
+                onChange={handleChange}
+                required={!isEditing}
+                className={inputClasses}
+              />
+              {!isEditing && (
+                <p className="text-xs text-gray-400 mt-1.5">Mínimo de 6 caracteres</p>
+              )}
+            </CampoFormulario>
+          </div>
         </div>
 
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">Email</label>
-          <input
-            type="email"
-            name="email"
-            value={form.email}
-            onChange={handleChange}
-            required
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00843D]"
-          />
+        <div className="flex items-center gap-3 pt-6 mt-6 border-t border-gray-100">
+          <button
+            type="submit"
+            disabled={loading}
+            className="flex items-center gap-2 bg-ifma text-white px-6 py-2.5 rounded-xl font-medium hover:bg-ifma-dark shadow-sm active:scale-[0.98] transition-all duration-200 disabled:opacity-50"
+          >
+            <FiSave size={16} />
+            {loading ? 'Salvando...' : 'Salvar'}
+          </button>
+          <button
+            type="button"
+            onClick={() => navigate('/admin/administradores')}
+            className="px-6 py-2.5 rounded-xl text-sm font-medium text-gray-600 hover:text-gray-800 hover:bg-gray-100 transition-all duration-200"
+          >
+            Cancelar
+          </button>
         </div>
-
-        <div>
-          <label className="block text-sm font-medium text-gray-700 mb-1">
-            Senha {isEditing && <span className="text-gray-400">(deixe em branco para manter)</span>}
-          </label>
-          <input
-            type="password"
-            name="senha"
-            value={form.senha}
-            onChange={handleChange}
-            required={!isEditing}
-            className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#00843D]"
-          />
-        </div>
-
-        <button
-          type="submit"
-          disabled={loading}
-          className="flex items-center gap-2 bg-[#00843D] text-white px-6 py-3 rounded-lg font-medium hover:bg-green-800 transition disabled:opacity-50"
-        >
-          <FiSave size={16} />
-          {loading ? 'Salvando...' : 'Salvar'}
-        </button>
       </form>
     </AdminLayout>
   );

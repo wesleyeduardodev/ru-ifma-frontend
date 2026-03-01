@@ -35,7 +35,7 @@ export default function AlterarSenha() {
     setLoading(true);
     try {
       await api.put('/api/auth/alterar-senha', { senhaAtual, novaSenha });
-      logout();
+      await logout();
       navigate('/login');
     } catch (err) {
       const mensagem = err.response?.data?.erro || 'Erro ao alterar senha.';

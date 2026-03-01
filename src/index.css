@@ -6,6 +6,7 @@
   --color-ifma-light: #E8F5EE;
   --color-ifma-50: #F0FAF4;
   --font-family-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+  --font-family-heading: 'Instrument Serif', Georgia, serif;
 }
 
 @layer base {
@@ -17,4 +18,31 @@
 @keyframes loading {
   0%, 100% { transform: translateX(-100%); }
   50% { transform: translateX(200%); }
+}
+
+@keyframes loginReveal {
+  from { opacity: 0; transform: translateX(-30px); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes loginFadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes loginFadeInUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  15%, 55% { transform: translateX(-5px); }
+  35%, 75% { transform: translateX(5px); }
+}
+
+@keyframes loginFloat {
+  0%, 100% { transform: translate(0, 0); }
+  33% { transform: translate(8px, -12px); }
+  66% { transform: translate(-5px, 8px); }
 }

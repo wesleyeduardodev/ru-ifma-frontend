@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect } from 'react';
-import api from '../services/api';
+import api, { definirAccessToken, limparAccessToken } from '../services/api';
 
 const AuthContext = createContext();
 
@@ -8,34 +8,43 @@ export function AuthProvider({ children }) {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const credentials = sessionStorage.getItem('ru_credentials');
-    if (credentials) {
-      api.get('/api/auth/me')
-        .then(res => setAdmin(res.data))
-        .catch(() => {
-          sessionStorage.removeItem('ru_credentials');
-          setAdmin(null);
-        })
-        .finally(() => setLoading(false));
-    } else {
-      setLoading(false);
-    }
+    api.post('/api/auth/refresh')
+      .then((res) => {
+        definirAccessToken(res.data.accessToken);
+        setAdmin(res.data.admin);
+      })
+      .catch(() => {
+        limparAccessToken();
+        setAdmin(null);
+      })
+      .finally(() => setLoading(false));
   }, []);
 
   const login = async (email, senha) => {
-    const res = await api.post('/api/auth/login', { email, senha });
-    if (res.data.admin) {
-      const credentials = btoa(`${email}:${senha}`);
-      sessionStorage.setItem('ru_credentials', credentials);
-      setAdmin(res.data.admin);
-      return true;
+    try {
+      const res = await api.post('/api/auth/login', { email, senha });
+      if (res.data.accessToken && res.data.admin) {
+        definirAccessToken(res.data.accessToken);
+        setAdmin(res.data.admin);
+        return true;
+      }
+      return false;
+    } catch (err) {
+      if (err.response?.status === 401) {
+        return false;
+      }
+      throw err;
     }
-    return false;
   };
 
-  const logout = () => {
-    sessionStorage.removeItem('ru_credentials');
-    setAdmin(null);
+  const logout = async () => {
+    try {
+      await api.post('/api/auth/logout');
+    } catch {
+    } finally {
+      limparAccessToken();
+      setAdmin(null);
+    }
   };
 
   return (

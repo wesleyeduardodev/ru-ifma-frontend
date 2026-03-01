@@ -2,7 +2,7 @@
 
 ## Stack
 
-React 19, Vite 7, TailwindCSS 4 (via @tailwindcss/vite), React Router DOM, Axios, date-fns, react-icons
+React 19, Vite 7, TailwindCSS 4 (via @tailwindcss/vite), React Router DOM, Axios, date-fns, react-icons, Google Fonts (Instrument Serif)
 
 ## Como rodar
 
@@ -66,10 +66,13 @@ src/
 
 ## Autenticacao
 
-- Login via POST /api/auth/login (valida credenciais)
-- Credenciais armazenadas em sessionStorage como base64 (chave: `ru_credentials`)
-- Interceptor de request: adiciona header `Authorization: Basic {credentials}` automaticamente
-- Interceptor de response: ao receber 401, limpa credenciais e redireciona para /login
+- Login via POST /api/auth/login (retorna accessToken + refreshToken em cookie)
+- AccessToken armazenado em memoria (nao persiste entre abas)
+- RefreshToken armazenado em cookie HttpOnly com SameSite=Strict
+- Interceptor de request: adiciona header `Authorization: Bearer {accessToken}` automaticamente
+- Interceptor de response: ao receber 401, tenta renovar token via POST /api/auth/refresh (com fila para requisicoes concorrentes)
+- Silent refresh: AuthProvider tenta renovar token no mount (checa refresh cookie)
+- Logout: POST /api/auth/logout invalida refresh token e limpa cookie
 - AuthContext expoe: admin, login(), logout(), loading
 - PrivateRoute redireciona para /login se nao autenticado
 
@@ -88,8 +91,11 @@ Todas as chamadas via instancia Axios em `src/services/api.js`:
 - `api.put('/api/cardapios/{id}', body)` → atualizar (autenticado)
 - `api.delete('/api/cardapios/{id}')` → deletar (autenticado)
 - `api.get('/api/admin')` → listar admins (autenticado)
-- `api.post('/api/auth/login', body)` → login (publico)
+- `api.post('/api/auth/login', body)` → login, retorna accessToken + admin, cookie com refreshToken (publico)
+- `api.post('/api/auth/refresh')` → renova tokens, retorna novo accessToken, novo cookie (publico, com refresh token cookie)
+- `api.post('/api/auth/logout')` → invalida refresh token e limpa cookie (autenticado)
 - `api.get('/api/auth/me')` → admin logado (autenticado)
+- `api.put('/api/auth/alterar-senha', body)` → altera senha e invalida todos refresh tokens (autenticado)
 
 ## Deploy
 
@@ -103,10 +109,11 @@ Todas as chamadas via instancia Axios em `src/services/api.js`:
 - Cores IFMA: verde `#00843D`, branco, cinza claro (`bg-gray-50`)
 - Componentes com TailwindCSS (classes utilitarias, sem CSS custom)
 - Icones via react-icons (pacote Fi - Feather Icons)
-- Fonte Inter via Google Fonts
+- Fontes: Inter via Google Fonts (corpo), Instrument Serif via Google Fonts (headings)
 - Responsivo (mobile-first com breakpoints sm/md)
 - Cards com bordas arredondadas (`rounded-xl`, `rounded-2xl`), sombras suaves
 - Loading spinner com `animate-spin` verde
+- Login com layout diagonal, animacoes CSS (loginReveal, loginFadeIn, loginFadeInUp, loginShake, loginFloat)
 
 ## REGRA OBRIGATORIA: Acentuacao em portugues
 
